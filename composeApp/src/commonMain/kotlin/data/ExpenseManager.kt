@@ -1,4 +1,4 @@
-package com.utfpr.multiplataformproject.data
+package data
 
 import Model.Expense
 import Model.ExpenseCategory
@@ -10,43 +10,43 @@ object ExpenseManager {
     val fakeExpenseList = mutableListOf(
         Expense(
             id = currentId++,
-            amount = 70.0,
+            amount = 3000.0,
             category = ExpenseCategory.COFFEE,
             description = "3 Corações"
         ),
         Expense(
             id = currentId++,
-            amount = 3000.0,
+            amount = 6000.0,
             category = ExpenseCategory.PARTY,
             description = "Bloco CAmaleão - Bell Marques"
         ),
         Expense(
             id = currentId++,
-            amount = 8.20,
+            amount = 3000.00,
             category = ExpenseCategory.SNACKS,
             description = "Biscoito"
         ),
         Expense(
             id = currentId++,
-            amount = 10.2,
+            amount = 200.00,
             category = ExpenseCategory.PARTY,
             description = "Farofa da GKay"
         ),
         Expense(
             id = currentId++,
-            amount = 10000.0,
+            amount = 10000.00,
             category = ExpenseCategory.CAR,
             description = "BYD DOUPHIN"
         ),
         Expense(
             id = currentId++,
-            amount = 100.0,
+            amount = 3000.00,
             category = ExpenseCategory.HOUSE,
             description = "LIMPEZA"
         ),
         Expense(
             id = currentId++,
-            amount = 1000.0,
+            amount = 2000.00,
             category = ExpenseCategory.OTHER,
             description = "LIMPEZA"
         ),
@@ -59,12 +59,13 @@ object ExpenseManager {
     )
 
     fun addNewExpense(expense: Expense){
+
         fakeExpenseList.add(expense.copy(id = currentId++))
     }
 
-    fun deleteExpense(expense: Expense){
+    fun deleteExpense(id: Long){
         val index = fakeExpenseList.indexOfFirst{
-            it.id == expense.id
+            it.id == id
         }
         fakeExpenseList.removeAt(index)
     }

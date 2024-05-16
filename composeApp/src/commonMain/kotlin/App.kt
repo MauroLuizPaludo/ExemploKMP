@@ -1,45 +1,132 @@
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.PieChart
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import data.TitleTopBarTypes
+import moe.tlaster.precompose.PreComposeApp
+import moe.tlaster.precompose.navigation.Navigator
+import moe.tlaster.precompose.navigation.path
+import moe.tlaster.precompose.navigation.rememberNavigator
+import navigation.Navigation
 
-import kotlinproject.composeapp.generated.resources.Res
-import kotlinproject.composeapp.generated.resources.compose_multiplatform
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-@Preview
 fun App() {
-    var loggedIn by remember { mutableStateOf(false) }
+    PreComposeApp {
+        val colors = getColorsTheme()
 
-    MaterialTheme {
-
-        if(loggedIn){
-            MainMenuScreen()
-        } else {
-            LoginScreen {loggedIn = true}
+        AppTheme {
+            val navigator = rememberNavigator()
+            val titleTopBar = getTitleTopAppBar(navigator)
+            val isEditOrAddExpenses = titleTopBar != TitleTopBarTypes.DASHBOARD.value
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                topBar = {
+                    TopAppBar(
+                        elevation = 0.dp,
+                        title = {
+                            Text(
+                                text = titleTopBar,
+                                fontSize = 25.sp,
+                                color = colors.textColor
+                            )
+                        },
+                        navigationIcon = {
+                            if (isEditOrAddExpenses) {
+                                IconButton(
+                                    onClick = {
+                                        navigator.popBackStack()
+                                    }
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.padding(start = 16.dp),
+                                        imageVector = Icons.Default.ArrowBack,
+                                        tint = colors.textColor,
+                                        contentDescription = "back arrow icon"
+                                    )
+                                }
+                            } else {
+                                IconButton(
+                                    onClick = {
+                                        navigator.navigate("/chart")
+                                    }
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.padding(start = 16.dp),
+                                        imageVector = Icons.Default.BarChart,
+                                        tint = colors.textColor,
+                                        contentDescription = "Chart icon"
+                                    )
+                                }
+                            }
+                        },
+                        backgroundColor = colors.backgroundColor
+                    )
+                },
+                floatingActionButton = {
+                    if (!isEditOrAddExpenses) {
+                        FloatingActionButton(
+                            modifier = Modifier.padding(8.dp),
+                            onClick = {
+                                navigator.navigate("/addExpenses")
+                            },
+                            shape = RoundedCornerShape(50),
+                            backgroundColor = colors.addIconColor,
+                            contentColor = Color.White
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                tint = Color.White,
+                                contentDescription = "Floating icon"
+                            )
+                        }
+                    }
+                }) {
+                Navigation(navigator)
+            }
         }
-//        var showContent by remember { mutableStateOf(false) }
-//        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-//            Button(onClick = { showContent = !showContent }) {
-//                Text("Click me!")
-//            }
-//            AnimatedVisibility(showContent) {
-//                val greeting = remember { Greeting().greet() }
-//                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-//                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-//                    Text("Compose: $greeting")
-//                }
-//            }
-//        }
     }
 }
+
+@Composable
+fun getTitleTopAppBar(navigator: Navigator): String {
+    var titleTopBar = TitleTopBarTypes.DASHBOARD
+
+    val isOnAddExpenses =
+        navigator.currentEntry.collectAsState(null).value?.route?.route.equals("/addExpenses/{id}?")
+    if (isOnAddExpenses) {
+        titleTopBar = TitleTopBarTypes.ADD
+    }
+
+    val isOnEditExpense = navigator.currentEntry.collectAsState(null).value?.path<Long>("id")
+    isOnEditExpense?.let {
+        titleTopBar = TitleTopBarTypes.EDIT
+    }
+
+    val isOnChart =
+        navigator.currentEntry.collectAsState(null).value?.route?.route.equals("/chart")
+    if (isOnChart) {
+        titleTopBar = TitleTopBarTypes.CHART
+    }
+
+    return titleTopBar.value
+}
+

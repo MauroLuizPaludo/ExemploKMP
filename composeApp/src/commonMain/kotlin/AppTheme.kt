@@ -1,45 +1,52 @@
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
+import androidx.compose.foundation.shape.AbsoluteCutCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
-import kotlinproject.composeapp.generated.resources.Res
-import kotlinproject.composeapp.generated.resources.compose_multiplatform
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-@Preview
-fun App() {
-    var loggedIn by remember { mutableStateOf(false) }
-
-    MaterialTheme {
-
-        if(loggedIn){
-            MainMenuScreen()
-        } else {
-            LoginScreen {loggedIn = true}
-        }
-//        var showContent by remember { mutableStateOf(false) }
-//        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-//            Button(onClick = { showContent = !showContent }) {
-//                Text("Click me!")
-//            }
-//            AnimatedVisibility(showContent) {
-//                val greeting = remember { Greeting().greet() }
-//                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-//                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-//                    Text("Compose: $greeting")
-//                }
-//            }
-//        }
+fun AppTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colors = MaterialTheme.colors.copy(primary = Color.Black),
+        shapes = MaterialTheme.shapes.copy(
+            small = AbsoluteCutCornerShape(0.dp),
+            medium = AbsoluteCutCornerShape(0.dp),
+            large = AbsoluteCutCornerShape(0.dp)
+        )
+    ) {
+        content()
     }
 }
+
+
+@Composable
+fun getColorsTheme(): DarkModeColors {
+    val isDarkMode = false
+
+    val Purple = Color(0xFF6A66FF)
+    val ColorExpenseItem = if (isDarkMode) Color(0xFF090808) else Color(0xFFF1F1F1)
+    val BackgroundColor = if (isDarkMode) Color(0XFF1E1C1C) else Color.White
+    val TextColor = if (isDarkMode) Color.White else Color.Black
+    val AddIconColor = if (isDarkMode) Purple else Color.Black
+    val ColorArrowRound = if (isDarkMode) Purple else Color.Gray.copy(alpha = .2f)
+
+    return DarkModeColors(
+        purple = Purple,
+        colorExpenseItem = ColorExpenseItem,
+        backgroundColor = BackgroundColor,
+        textColor = TextColor,
+        addIconColor = AddIconColor,
+        colorArrowRound = ColorArrowRound
+    )
+}
+
+
+data class DarkModeColors(
+    val purple: Color,
+    val colorExpenseItem: Color,
+    val backgroundColor: Color,
+    val textColor: Color,
+    val addIconColor: Color,
+    val colorArrowRound: Color
+)

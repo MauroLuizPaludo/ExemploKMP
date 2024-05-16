@@ -1,3 +1,5 @@
+package ui
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,7 +11,7 @@ import data.ExpenseManager
 import kotlin.random.Random
 
 @Composable
-fun ExpensesChart() {
+fun ExpensesChartScreen() {
     var expenses = ExpenseManager.fakeExpenseList
     val dados = mutableListOf<PieChartData>()
 

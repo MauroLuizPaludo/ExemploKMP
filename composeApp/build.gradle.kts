@@ -7,6 +7,15 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
 }
+group = "io.github.thechance101"
+version = "Beta-0.0.5"
+
+group = "com.aay"
+version = "1.0-SNAPSHOT"
+
+group = "dev.gitlive"
+version =  "1.12.0"
+
 
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
@@ -25,7 +34,7 @@ kotlin {
         }
         binaries.executable()
     }
-    
+
     androidTarget {
         compilations.all {
             kotlinOptions {
@@ -33,24 +42,34 @@ kotlin {
             }
         }
     }
-    
+
     jvm("desktop")
-    
+
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("dev.gitlive:firebase-firestore:1.12.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
-            implementation(compose.foundation)
+         //   implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(projects.shared)
+
+            //Adicionando API material
+            api(compose.materialIconsExtended)
+
+            //Navigation PreCompose
+            api("moe.tlaster:precompose:1.6.0-rc04")
+
+            //View Model
+            api("moe.tlaster:precompose-viewmodel:1.6.0-rc04")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -90,6 +109,11 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
+}
+dependencies {
+    implementation(libs.androidx.benchmark.macro)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(project(":composeApp"))
 }
 
 compose.desktop {

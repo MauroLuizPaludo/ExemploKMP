@@ -45,6 +45,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
+           // implementation("io.github.thechance101:chart-desktop:Beta-0.0.2")
         }
     }
 }
