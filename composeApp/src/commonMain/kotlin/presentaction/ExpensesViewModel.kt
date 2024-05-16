@@ -1,0 +1,4 @@
+package presentaction
+
+class ExpensesViewModel {
+}
